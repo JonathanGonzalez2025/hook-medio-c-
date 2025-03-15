@@ -36,9 +36,9 @@ DWORD jmpBackAddy;
 void __declspec(naked)ourFunct() {
 	int result;
 	__asm{
-		fld dword ptr [edi+ebp*8] 
-		fadd dword ptr [esp+28]
-		jmp [jmpBackAddy]	
+		fld dword ptr [edi+ebp*8]  //instruccion enganchada  la modificamos a nuestro gusto
+		fadd dword ptr [esp+28]  //instruccion sobreescrita por el salto, se agrega aqui para evitar que se rompa el programa 
+		jmp [jmpBackAddy]	  //salto atras
 	}
 }
 
@@ -46,9 +46,9 @@ bool unaves = TRUE;
 
 DWORD WINAPI MainThread(LPVOID param){
 
-		int hookLength = 7;  
-	DWORD hookAddress = 0x006E07C6;
-	jmpBackAddy = hookAddress + hookLength;  
+		int hookLength = 7;   //el tamaño de los bytes que abarcara nuestra instruccion de salto, incluyendo los sobrantes 
+	DWORD hookAddress = 0x006E07C6;   //direccion donde colocaremos  JMP
+	jmpBackAddy = hookAddress + hookLength;  //Salto  atras 
 
 	Hook((void*)hookAddress, ourFunct, hookLength);
 
